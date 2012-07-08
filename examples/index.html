@@ -1,0 +1,91 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>Example responsive tabs</title>
+	<meta name="description" content="Responsive tabs">
+	<meta name="author" content="Benjamin COUSIN">
+
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+
+	<script src="js/libs/modernizr-2.5.3.min.js"></script>
+</head>
+<body>
+	<ul class="nav nav-tabs">
+		<li><a href="#tab1">tab1</a></li>
+		<li><a href="#tab2">tab2</a></li>
+		<li><a href="#tab2">tab2</a></li>
+		<li><a href="#tab3">tab3WithLongText</a></li>
+    <li><a href="#tab3">tab3WithLongText vjdozj iozjfzoejfzeojf oz</a></li>
+    <li><a href="#tab2">tab2</a></li>
+    <li><a href="#tab2">tab2</a></li>
+    <li><a href="#tab3">tab3WithLongText</a></li>
+		<li><a href="#tab4">tab4 with long phrase</a></li>
+    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">more<b class="caret">
+    </b></a><ul class="dropdown-menu pull-right">
+      <li><a href="#tab2">pouet</a></li>
+      <li><a href="#tab2">prouit</a></li>
+  </ul></li>
+</ul>
+<script src="js/libs/jquery-1.7.1.js"></script>
+<script src="js/libs/bootstrap-tab.js"></script>
+<script src="js/libs/bootstrap-dropdown.js"></script>
+<script src="js/script.js"></script>
+<script>
+  var responsiveTab = function(){
+    //On reinit pour pouvoir recalculer correctement la taille
+    var p = $('.nav-tabs .dropdown-menu li');
+    $('.nav-tabs .dropdown').remove();
+    $('.nav-tabs').append('<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">more<b class="caret"></b></a><ul class="dropdown-menu pull-right"></ul></li>');
+    $('.nav-tabs').append(p);
+    var dropdownMenu = $('.nav-tabs li.dropdown');
+    var tabs = $('.nav-tabs li[class!="dropdown"]');
+
+    var toAdd = [];
+    var others = [];
+    var currentWidth = 0;
+    var maxWidth = $('.nav-tabs').width() - dropdownMenu.width();
+    tabs.each(function (i,tab){
+      console.log("Current :"+currentWidth);
+
+      tabWidth = $(tab).width();
+      if((currentWidth+tabWidth)<maxWidth || $(tab).hasClass("required") || $(tab).hasClass("active")){
+        currentWidth += tabWidth;
+        toAdd.push(tab);
+      }else{
+        others.push(tab);
+      }
+    });
+    console.log("CurrentWidth : "+currentWidth);
+    console.log("MaxWidth :"+maxWidth);
+    console.log("ToAdd :"+ toAdd.length);
+    console.log("Others :"+others.length);
+
+    $('.nav-tabs').empty();
+    $('.nav-tabs').append(toAdd);
+    $('.nav-tabs').append(dropdownMenu);
+    if(others.length>0){
+      $('.nav-tabs .dropdown-menu').append(others);
+      $().dropdown();
+    }else{
+      $('.nav-tabs .dropdown').remove();
+    }
+    
+  };
+
+  $(function () {
+    $(window).resize(function() {
+      responsiveTab();  
+    });
+  });
+</script>
+</body>
+</html>
