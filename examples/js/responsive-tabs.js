@@ -20,7 +20,9 @@
             //FIXME ajouter le do-not-move automatiquement à l'init du plugin
             //FIXME bug lorsqu'il y a deux navtab dans la page
             console.log("init()");
+
             $(e).addClass(this.selector);
+            $(e).find('.dropdown-menu li').addClass('do-not-move');
         },
         resize:function(o){
             console.log("resize");
@@ -35,10 +37,14 @@
             var alwaysInDropdown = object.find('.dropdown-menu li.do-not-move');
             //Put all tabs in line and remove the 'more' tab
             object.find('.dropdown').remove();
-            var dropdownMenu = $('<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">more<b class="caret"></b></a><ul class="dropdown-menu pull-right"></ul></li>');
+            var dropdownMenu = $('<li class="dropdown">' +
+                                 '<a class="dropdown-toggle" data-toggle="dropdown" href="#">' +
+                                 'more<b class="caret"></b>' +
+                                 '</a>' +
+                                 '<ul class="dropdown-menu pull-right"></ul>' +
+                                 '</li>');
             object.append(itemsToMove);
             object.append(dropdownMenu);
-            //var dropdownMenu = object.find('li.dropdown');
             var tabs = object.find('li[class!="dropdown"][class!="do-not-move"]');
 
             var toAdd = [];
