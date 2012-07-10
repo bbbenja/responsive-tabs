@@ -16,7 +16,6 @@
         selector : "responsive-tabs",
         constructor: ResponsiveTab,
         init:function(e){
-            //FIXME bug lorsqu'il y a deux navtab dans la page
             //FIXME que faire lorsqu'un élément actif se trouve ds le ddown
             console.log("init()");
 
