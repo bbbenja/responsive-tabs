@@ -5,6 +5,7 @@
     var ResponsiveTab = function (e) {
                 this.init(e);
                 var instance = this;
+                //FIXME faire appel au smartResize
                 $(window).resize(function () {
                         instance.init();
                 });
@@ -13,7 +14,11 @@
     ResponsiveTab.prototype = {
         constructor: ResponsiveTab,
         init:function(e){
+            //FIXME conserver l'item actif/required
+            //FIXME laisser les items initialement dans les dropdown
             console.log("responsiveTab()");
+            //Hiding to avoid blink effect
+            $('.nav-tabs').css('visibility','hidden');
             //On reinit pour pouvoir recalculer correctement la taille
             var p = $('.nav-tabs .dropdown-menu li');
             $('.nav-tabs .dropdown').remove();
@@ -26,12 +31,15 @@
             var others = [];
             var currentWidth = 0;
             var maxWidth = $('.nav-tabs').width() - dropdownMenu.width();
+            var maxReach = false;
             tabs.each(function (i,tab){
                 var tabWidth = $(tab).width();
-                if((currentWidth+tabWidth)<maxWidth || $(tab).hasClass("required") || $(tab).hasClass("active")){
+                if(!maxReach &&
+                   ((currentWidth+tabWidth)<maxWidth || $(tab).hasClass("required") || $(tab).hasClass("active"))){
                     currentWidth += tabWidth;
                     toAdd.push(tab);
                 }else{
+                    maxReach=true;
                     others.push(tab);
                 }
             });
@@ -44,6 +52,7 @@
             }else{
                 $('.nav-tabs .dropdown').remove();
             }
+            $('.nav-tabs').css('visibility','visible');
         }
     }
 
