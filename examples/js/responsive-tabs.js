@@ -4,36 +4,47 @@
 
     var ResponsiveTab = function (e) {
                 this.init(e);
+                this.resizeTabs();
                 var instance = this;
                 //FIXME faire appel au smartResize
                 $(window).resize(function () {
-                        instance.init();
+                        instance.resizeTabs();
                 });
             }
 
     ResponsiveTab.prototype = {
+        selector : "responsive-tabs",
         constructor: ResponsiveTab,
         init:function(e){
             //FIXME conserver l'item actif/required
             //FIXME ajouter le do-not-move automatiquement à l'init du plugin
             //FIXME bug lorsqu'il y a deux navtab dans la page
-            console.log("responsiveTab()");
+            console.log("init()");
+            $(e).addClass(this.selector);
+        },
+        resize:function(o){
+            console.log("resize");
+
+            var object = $(o);
             //Hiding to avoid blink effect
-            $('.nav-tabs').css('visibility','hidden');
-            //On reinit pour pouvoir recalculer correctement la taille
+            object.css('visibility','hidden');
+
+            //Set to initial position/size
             //TODO ici, on pourrait ne pas prendre les items qui ont la class active ou required
-            var itemsToMove = $('.nav-tabs .dropdown-menu li[class!="do-not-move"]');
-            var alwaysInDropdown = $('.nav-tabs .dropdown-menu li.do-not-move');
-            $('.nav-tabs .dropdown').remove();
-            $('.nav-tabs').append('<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">more<b class="caret"></b></a><ul class="dropdown-menu pull-right"></ul></li>');
-            $('.nav-tabs').append(itemsToMove);
-            var dropdownMenu = $('.nav-tabs li.dropdown');
-            var tabs = $('.nav-tabs li[class!="dropdown"][class!="do-not-move"]');
+            var itemsToMove = object.find('.dropdown-menu li[class!="do-not-move"]');
+            var alwaysInDropdown = object.find('.dropdown-menu li.do-not-move');
+            //Put all tabs in line and remove the 'more' tab
+            object.find('.dropdown').remove();
+            var dropdownMenu = $('<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">more<b class="caret"></b></a><ul class="dropdown-menu pull-right"></ul></li>');
+            object.append(itemsToMove);
+            object.append(dropdownMenu);
+            //var dropdownMenu = object.find('li.dropdown');
+            var tabs = object.find('li[class!="dropdown"][class!="do-not-move"]');
 
             var toAdd = [];
             var others = [];
             var currentWidth = 0;
-            var maxWidth = $('.nav-tabs').width() - dropdownMenu.width();
+            var maxWidth = object.width() - dropdownMenu.width();
             var maxReach = false;
             tabs.each(function (i,tab){
                 var tabWidth = $(tab).width();
@@ -47,16 +58,22 @@
                 }
             });
             var itemsToPutInDropdown = others.concat(alwaysInDropdown.toArray());
-            $('.nav-tabs').empty();
-            $('.nav-tabs').append(toAdd);
-            $('.nav-tabs').append(dropdownMenu);
+            object.empty();
+            object.append(toAdd);
+            object.append(dropdownMenu);
             if(itemsToPutInDropdown.length>0){
-                $('.nav-tabs .dropdown-menu').append(itemsToPutInDropdown);
+                object.find('.dropdown-menu').append(itemsToPutInDropdown);
                 $().dropdown();
             }else{
-                $('.nav-tabs .dropdown').remove();
+                object.find('.dropdown').remove();
             }
-            $('.nav-tabs').css('visibility','visible');
+            object.css('visibility','visible');
+        },
+        resizeTabs:function(){
+            console.log("resizeTabs()");
+
+            var instance = this;
+            $('.'+this.selector).each(function(){instance.resize(this)});
         }
     }
 
