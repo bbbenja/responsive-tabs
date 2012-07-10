@@ -16,15 +16,17 @@
         init:function(e){
             //FIXME conserver l'item actif/required
             //FIXME ajouter le do-not-move automatiquement à l'init du plugin
+            //FIXME bug lorsqu'il y a deux navtab dans la page
             console.log("responsiveTab()");
             //Hiding to avoid blink effect
             $('.nav-tabs').css('visibility','hidden');
             //On reinit pour pouvoir recalculer correctement la taille
-            var p = $('.nav-tabs .dropdown-menu li[class!="dp-not-move"]');
+            //TODO ici, on pourrait ne pas prendre les items qui ont la class active ou required
+            var itemsToMove = $('.nav-tabs .dropdown-menu li[class!="do-not-move"]');
             var alwaysInDropdown = $('.nav-tabs .dropdown-menu li.do-not-move');
             $('.nav-tabs .dropdown').remove();
             $('.nav-tabs').append('<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">more<b class="caret"></b></a><ul class="dropdown-menu pull-right"></ul></li>');
-            $('.nav-tabs').append(p);
+            $('.nav-tabs').append(itemsToMove);
             var dropdownMenu = $('.nav-tabs li.dropdown');
             var tabs = $('.nav-tabs li[class!="dropdown"][class!="do-not-move"]');
 
