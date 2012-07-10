@@ -6,7 +6,7 @@
                 this.init(e);
                 this.resizeTabs();
                 var instance = this;
-                //FIXME faire appel au smartResize
+                //bind on resize to compute optimum size
                 $(window).resize(function () {
                         instance.resizeTabs();
                 });
@@ -16,9 +16,8 @@
         selector : "responsive-tabs",
         constructor: ResponsiveTab,
         init:function(e){
-            //FIXME conserver l'item actif/required
-            //FIXME ajouter le do-not-move automatiquement à l'init du plugin
             //FIXME bug lorsqu'il y a deux navtab dans la page
+            //FIXME que faire lorsqu'un élément actif se trouve ds le ddown
             console.log("init()");
 
             $(e).addClass(this.selector);
@@ -32,8 +31,7 @@
             object.css('visibility','hidden');
 
             //Set to initial position/size
-            //TODO ici, on pourrait ne pas prendre les items qui ont la class active ou required
-            var itemsToMove = object.find('.dropdown-menu li[class!="do-not-move"]');
+            var itemsToMove = object.find('.dropdown-menu li:not([class*="do-not-move"])');
             var alwaysInDropdown = object.find('.dropdown-menu li.do-not-move');
             //Put all tabs in line and remove the 'more' tab
             object.find('.dropdown').remove();
@@ -45,27 +43,39 @@
                                  '</li>');
             object.append(itemsToMove);
             object.append(dropdownMenu);
-            var tabs = object.find('li[class!="dropdown"][class!="do-not-move"]');
+            //select only items that could move
+            var items = object.find('li:not(li[class*="active"], ' +
+                                    'li[class*="required"], ' +
+                                    'li[class*="dropdown"], ' +
+                                    'li[class*="do-not-move"])');
 
-            var toAdd = [];
-            var others = [];
+            //items that dont move
+            var itemsInTabs = object.find('li[class*="active"], li[class*="required"]');
+            var itemsInDropdown = [];
             var currentWidth = 0;
             var maxWidth = object.width() - dropdownMenu.width();
             var maxReach = false;
-            tabs.each(function (i,tab){
+            //compute initial width
+            itemsInTabs.each(function(i,tab){
+               currentWidth+=$(tab).width();
+            });
+            //find optimal width
+            items.each(function (i,tab){
                 var tabWidth = $(tab).width();
                 if(!maxReach &&
-                   ((currentWidth+tabWidth)<maxWidth || $(tab).hasClass("required") || $(tab).hasClass("active"))){
+                   ((currentWidth+tabWidth)<maxWidth)){
                     currentWidth += tabWidth;
-                    toAdd.push(tab);
+                    itemsInTabs.push(tab);
                 }else{
+                    //if max width reaching, add all tabs in ddown
                     maxReach=true;
-                    others.push(tab);
+                    itemsInDropdown.push(tab);
                 }
             });
-            var itemsToPutInDropdown = others.concat(alwaysInDropdown.toArray());
+            var itemsToPutInDropdown = itemsInDropdown.concat(alwaysInDropdown.toArray());
             object.empty();
-            object.append(toAdd);
+            //rebuild all tabs
+            object.append(itemsInTabs);
             object.append(dropdownMenu);
             if(itemsToPutInDropdown.length>0){
                 object.find('.dropdown-menu').append(itemsToPutInDropdown);
