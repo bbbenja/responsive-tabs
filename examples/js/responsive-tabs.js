@@ -60,7 +60,7 @@
             });
             //find optimal width
             items.each(function (i,tab){
-                var tabWidth = $(tab).width();
+                var tabWidth = $(tab).outerWidth();
                 if(!maxReach &&
                    ((currentWidth+tabWidth)<maxWidth)){
                     currentWidth += tabWidth;
