@@ -56,7 +56,7 @@
             var maxReach = false;
             //compute initial width
             itemsInTabs.each(function(i,tab){
-               currentWidth+=$(tab).width();
+               currentWidth+=$(tab).outerWidth();
             });
             //find optimal width
             items.each(function (i,tab){
