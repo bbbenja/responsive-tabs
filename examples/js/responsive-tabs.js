@@ -14,17 +14,13 @@
 
     ResponsiveTab.prototype = {
         selector : "responsive-tabs",
+        cssClassActive : "active",
         constructor: ResponsiveTab,
         init:function(e){
-            //FIXME que faire lorsqu'un élément actif se trouve ds le ddown
-            console.log("init()");
-
             $(e).addClass(this.selector);
             $(e).find('.dropdown-menu li').addClass('do-not-move');
         },
         resize:function(o){
-            console.log("resize");
-
             var object = $(o);
             //Hiding to avoid blink effect
             object.css('visibility','hidden');
@@ -43,13 +39,12 @@
             object.append(itemsToMove);
             object.append(dropdownMenu);
             //select only items that could move
-            var items = object.find('li:not(li[class*="active"], ' +
-                                    'li[class*="required"], ' +
+            var items = object.find('li:not(' +
                                     'li[class*="dropdown"], ' +
                                     'li[class*="do-not-move"])');
 
             //items that dont move
-            var itemsInTabs = object.find('li[class*="active"], li[class*="required"]');
+            var itemsInTabs = object.find('li[class*="'+this.cssClassActive+'"], li[class*="required"]');
             var itemsInDropdown = [];
             var currentWidth = 0;
             var maxWidth = object.width() - dropdownMenu.outerWidth(true);
@@ -59,8 +54,14 @@
                currentWidth+=$(tab).outerWidth(true);
             });
             //find optimal width
+            var instance = this;
             items.each(function (i,tab){
-                var tabWidth = $(tab).outerWidth(true);
+                var isActive = $(tab).hasClass(instance.cssClassActive);
+                var isRequired = $(tab).hasClass("required");
+                var tabWidth = 0;
+                if(!isActive && !isRequired){
+                    var tabWidth = $(tab).outerWidth(true);
+                }
                 if(!maxReach &&
                    ((currentWidth+tabWidth)<maxWidth)){
                     currentWidth += tabWidth;
@@ -68,7 +69,11 @@
                 }else{
                     //if max width reaching, add all tabs in ddown
                     maxReach=true;
+                    if(isActive || isRequired){
+                        itemsInTabs.push(tab);
+                    }else{
                     itemsInDropdown.push(tab);
+                    }
                 }
             });
             var itemsToPutInDropdown = itemsInDropdown.concat(alwaysInDropdown.toArray());
@@ -85,8 +90,6 @@
             object.css('visibility','visible');
         },
         resizeTabs:function(){
-            console.log("resizeTabs()");
-
             var instance = this;
             $('.'+this.selector).each(function(){instance.resize(this)});
         }
