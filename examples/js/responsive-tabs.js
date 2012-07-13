@@ -52,15 +52,15 @@
             var itemsInTabs = object.find('li[class*="active"], li[class*="required"]');
             var itemsInDropdown = [];
             var currentWidth = 0;
-            var maxWidth = object.width() - dropdownMenu.width();
+            var maxWidth = object.width() - dropdownMenu.outerWidth(true);
             var maxReach = false;
             //compute initial width
             itemsInTabs.each(function(i,tab){
-               currentWidth+=$(tab).outerWidth();
+               currentWidth+=$(tab).outerWidth(true);
             });
             //find optimal width
             items.each(function (i,tab){
-                var tabWidth = $(tab).outerWidth();
+                var tabWidth = $(tab).outerWidth(true);
                 if(!maxReach &&
                    ((currentWidth+tabWidth)<maxWidth)){
                     currentWidth += tabWidth;
